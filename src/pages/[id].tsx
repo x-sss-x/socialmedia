@@ -8,17 +8,17 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home({ data }: { data: { data: any } }) {
   return (
     <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+      className={`flex min-h-screen flex-col items-center p-24 ${inter.className}`}
     >
       <h1 className="text-3xl">{data.data.username}</h1>
-      <div>
+      <div className="mt-5 px-44">
         {data.data.posts.length > 0 &&
           data.data.posts.map((post:any) => {
             return (
               <>
-                <h1 className="text-2xl font-medium">{post.content}</h1>
+                <h1 className="text-2xl font-medium underline">{post.title}</h1>
                 <br />
-                <div>{post.title}</div>
+                <p className="w-full text-justify">{post.content}</p>
               </>
             );
           })}
