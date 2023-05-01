@@ -15,6 +15,7 @@ export default function Home({ data }: { data: any }) {
           data.data.map((user: any) => {
             return (
               <Link
+                key={user.id}
                 href={`/${user.id}`}
                 className="mt-10 hover:text-blue-600 text-xl"
               >

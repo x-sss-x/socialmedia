@@ -15,11 +15,11 @@ export default function Home({ data }: { data: { data: any } }) {
         {data.data.posts.length > 0 &&
           data.data.posts.map((post:any) => {
             return (
-              <>
+              <div key={post.id}>
                 <h1 className="text-2xl font-medium underline">{post.title}</h1>
                 <br />
                 <p className="w-full text-justify">{post.content}</p>
-              </>
+              </div>
             );
           })}
       </div>
