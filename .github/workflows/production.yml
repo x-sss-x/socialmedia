@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: sbp_d6c2fc951b72e070993bd1a26947ad04bc31cb75
+      SUPABASE_DB_PASSWORD: Oxux0Ghh60q0bS4N
+      PROJECT_ID: fosadsuptpglvftdlfdt
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: supabase link --project-ref $PROJECT_ID
+      - run: supabase db push
