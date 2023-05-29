@@ -41,6 +41,7 @@ export default function Page() {
       >
         {commentsList?.map((comment: any) => (
           <Comment
+            key={comment.id}
             content={comment.content}
             createdAt={moment(comment.created_at).fromNow()}
             id={comment.id}

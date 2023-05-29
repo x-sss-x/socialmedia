@@ -18,7 +18,7 @@ export default function Page() {
       .select("id")
       .single();
     router.replace(`/comments/${response.data?.id}`);
-  }, [username]);
+  }, [username, router]);
 
   return (
     <main className="w-full h-full overflow-hidden flex justify-center items-center">
