@@ -13,28 +13,14 @@ datasource db {
 model users {
   id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   username   String     @unique
-  email      String     @unique
   created_at DateTime   @default(dbgenerated("now()"))
-  posts      posts[]
   comments   comments[]
-}
-
-model posts {
-  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  content     String
-  isPublished Boolean?   @default(false)
-  created_at  DateTime   @default(dbgenerated("now()"))
-  user        users      @relation(fields: [userId], references: [id])
-  userId      String     @db.Uuid
-  comments    comments[]
 }
 
 model comments {
   id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  comment String
-  posts   posts  @relation(fields: [postsId], references: [id])
-  postsId String @db.Uuid
-  user    users   @relation(fields: [userId], references: [id])
-  userId  String @db.Uuid
+  content String @db.Text
+  users   users?  @relation(fields: [usersId], references: [id])
+  usersId String? @db.Uuid
+  created_at DateTime @db.Timestamptz() @default(dbgenerated("now()"))
 }
