@@ -15,7 +15,9 @@ export const fetchIntialComments = createAsyncThunk<
     try {
       const response = await SupaClient.from("comments")
         .select("*,users(username)")
-        .limit(10);
+        .limit(10).order("created_at",{
+          ascending:false
+        });
       const data = response.data;
       return fulfillWithValue(data);
     } catch (e) {
@@ -37,7 +39,7 @@ export const postComment = createAsyncThunk<
   }
 >(
   "/comments/postComment",
-  async (payload, { fulfillWithValue, rejectWithValue }) => {
+  async (payload, { fulfillWithValue, rejectWithValue,dispatch }) => {
     try {
       const response = await SupaClient.from("comments")
         .insert({
@@ -47,6 +49,7 @@ export const postComment = createAsyncThunk<
         .select("*,users(username)")
         .single();
       const data = response.data;
+      dispatch(fetchIntialComments());
       return fulfillWithValue(data);
     } catch (e) {
       return rejectWithValue({ msg: "Something went wrong !" });
@@ -88,7 +91,6 @@ export const commentsSlice = createSlice({
     });
 
     builder.addCase(postComment.fulfilled, (state, { payload }) => {
-      state.data.push(payload);
       state.isPosting = false;
       state.error = null;
     });

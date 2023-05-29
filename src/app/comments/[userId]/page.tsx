@@ -1,18 +1,22 @@
 "use client";
 import { Comment } from "@/components/Comment";
 import { useAppSelector } from "../../../../store";
-import { Imprima } from "next/font/google";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { SupaClient } from "../../../../utils/supabase";
 import { useParams } from "next/navigation";
-const imprima = Imprima({ weight: "400", subsets: ["latin"] });
+import { useAppDispatch } from "../../../../hooks";
+import { postComment } from "../../../../store/comments.slice";
 
 export default function Page() {
   const [username, setUsername] = useState<undefined | string>(undefined);
-  const [content, setContent] = useState<undefined | string>(undefined);
+  const [content, setContent] = useState<undefined | string>("");
   const commentsList = useAppSelector((state) => state.comments.data) as [];
   const params = useParams();
+  const dispatch = useAppDispatch();
+  const isPosting = useAppSelector(
+    (state) => state.comments.isPosting
+  ) as boolean;
 
   const fetchUsername = useCallback(async () => {
     const response = await SupaClient.from("users")
@@ -22,9 +26,9 @@ export default function Page() {
     setUsername(response.data?.username);
   }, [params.userId]);
 
-  useEffect(()=>{
-     fetchUsername()
-  },[])
+  useEffect(() => {
+    fetchUsername();
+  }, []);
 
   return (
     <div className="w-1/2 h-full border border-slate-400 relative overflow-hidden">
@@ -45,14 +49,27 @@ export default function Page() {
         ))}
       </div>
       <div className="w-full flex py-4 px-5 backdrop-blur-sm border-t gap-3 border-t-slate-300 sticky bottom-0">
-        <textarea className="h-10 w-full rounded-md"></textarea>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="h-10 w-full rounded-md text-black text-lg"
+        ></textarea>
         <button
           id="add-comment-button"
           className={
             "px-3 rounded-md py-2 flex justify-center items-center text-xl bg-blue-700 text-white"
           }
+          onClick={() => {
+            if (content && params.userId)
+              dispatch(
+                postComment({
+                  content,
+                  id: params.userId,
+                })
+              );
+          }}
         >
-          Post
+          {isPosting ? "Posting..." : "Post"}
         </button>
       </div>
     </div>
