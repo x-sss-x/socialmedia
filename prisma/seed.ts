@@ -5,53 +5,30 @@ const prisma = new PrismaClient();
 
 const main = async () => {
   await prisma.comments.deleteMany();
-  await prisma.posts.deleteMany();
   await prisma.users.deleteMany();
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     await prisma.users.create({
       data: {
-        email: faker.internet.email("jack"),
         username: faker.internet.userName(),
-        posts: {
-          create: [
-            {
-              content: faker.lorem.paragraphs(),
-              title: faker.lorem.words(10),
-            },
-            {
-              content: faker.lorem.paragraphs(),
-              title: faker.lorem.words(10),
-            },
-          ],
+        comments: {
+          createMany: {
+            data: [
+              {
+                content: faker.lorem.sentence(),
+              },
+              {
+                content: faker.lorem.sentence(),
+              },
+              {
+                content: faker.lorem.sentence(),
+              },
+            ],
+          },
         },
       },
     });
   }
-
-  const users = await prisma.users.findMany();
-  const post = await prisma.posts.findFirst();
-
-  await Promise.all(
-    //maping the each user from database
-    users.map(async (user) => {
-      //inserting 2 comments for-each user
-      await prisma.comments.createMany({
-        data: [
-          {
-            comment: faker.lorem.sentence(),
-            postsId: post?.id!,
-            userId: user?.id!,
-          },
-          {
-            comment: faker.lorem.sentence(),
-            postsId: post?.id!,
-            userId: user?.id!,
-          },
-        ],
-      });
-    })
-  );
 };
 
 main()
